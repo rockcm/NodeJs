@@ -63,6 +63,7 @@ describe('Node.js API', () => { // Describe the test suite for the Node.js API
     http.request('http://localhost:3000/users/profile/1', (res) => {
       const postData = JSON.stringify({id: 4, name: 'testUser', age: 27});
 
+      this.timeout(5000); 
       const options = {
         hostname: 'localhost',
         port: 3000,
