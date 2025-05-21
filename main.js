@@ -28,6 +28,7 @@ app.get('/users', (req, res) => {
     res.json(people);
 });
 
+
 app.post('/users', (req, res) => {
     const user = new Person(req.body.name, parseInt(req.body.age));
     people.push(user);
@@ -35,6 +36,15 @@ app.post('/users', (req, res) => {
     console.log('Current people array:', people);
     res.json(user);
 }); 
+
+app.delete('/users/:id', (req, res) => {
+    const id = parseInt(req.params.id)
+    const index = people.findIndex(p => p.id === id)
+    console.log('Deleted:', people[index])
+    people.splice(index, 1)[0];
+    res.json(index);
+    
+});
 
 app.get('/users/:age', (req, res) => {
     const age = parseInt(req.params.age);
