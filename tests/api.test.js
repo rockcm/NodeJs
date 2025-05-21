@@ -61,7 +61,7 @@ describe('Node.js API', () => { // Describe the test suite for the Node.js API
 
   it('Post /users should return the user object being created', (done) => {
     http.request('http://localhost:3000/users/profile/1', (res) => {
-      const postData = JSON.stringify({name: 'testUser', age: 27});
+      const postData = JSON.stringify({id: 4, name: 'testUser', age: 27});
 
       const options = {
         hostname: 'localhost',
@@ -80,7 +80,7 @@ describe('Node.js API', () => { // Describe the test suite for the Node.js API
           const json = JSON.parse(data);
         expect(json).to.have.property('name', 'Test User');
         expect(json).to.have.property('age', 25);
-        expect(json).to.have.property('id'); // assuming your API assigns an ID
+        expect(json).to.have.property('id', 4); // assuming your API assigns an ID
         done();
         });
           req.on('error', (err) => {
