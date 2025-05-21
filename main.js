@@ -43,10 +43,15 @@ app.get('/users/:age', (req, res) => {
     console.log(people);
 });
 
-app.get('/users/:id', (req, res) => {
+app.get('/users/profile/:id', (req, res) => {
     const id = parseInt(req.params.id);
     const user = people.find(p => p.id === id);
+    if (!user) {
+        res.status(404).json({ message: 'User not found' });
+        return;
+    }
     res.json(user);
+    console.log('Found user:', user);
 });
 
 // Export for testing
