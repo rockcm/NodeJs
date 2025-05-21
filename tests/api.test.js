@@ -20,8 +20,8 @@ after(function (done) {
   });
 });
 
-describe('Node.js API54fthf', () => { // Describe the test suite for the Node.js API
-  it('GET / should return Hello, Worlerted!', (done) => { // Test case for the root endpoint
+describe('Node.js API', () => { // Describe the test suite for the Node.js API
+  it('GET / should return Hello, World!', (done) => { // Test case for the root endpoint
     http.get('http://localhost:3000/', (res) => { // Make a GET request to the root endpoint
       let data = ''; // Variable to accumulate response data
       
@@ -46,4 +46,18 @@ describe('Node.js API54fthf', () => { // Describe the test suite for the Node.js
       });
     });
   });
+
+  it('Get /users/:id should return a user object', (done) => {
+    http.get('http://localhost:3000/users/1', (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => {
+        const json = JSON.parse(data);
+        expect(json).to.be.an('object');
+        done();
+      });
+    });
+  });
+
+
 });

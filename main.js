@@ -3,14 +3,15 @@ const express = require('express');
 const cors = require('cors');
 
 class Person {
-    constructor(name, age) {
+    constructor(id, name, age) {
+        this.id = id;
         this.name = name;
         this.age = age;
     }
 }
 
-const person = new Person("John Doe", 30);
-const person2 = new Person("Jane Doe", 25);
+const person = new Person(1, "John Doe", 30);
+const person2 = new Person(2, "Jane Doe", 25);
 
 const people = [person, person2];
 console.log(people);
@@ -40,6 +41,12 @@ app.get('/users/:age', (req, res) => {
     const user = people.find(p => p.age === age);
     res.json(user);
     console.log(people);
+});
+
+app.get('/users/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const user = people.find(p => p.id === id);
+    res.json(user);
 });
 
 // Export for testing
