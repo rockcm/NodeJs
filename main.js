@@ -20,30 +20,34 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => { 
-    res.send('Hello World!');
+    res.json({ message: 'Hello, World!' });
 });
 
 app.get('/users', (req, res) => {
-    res.send(people);
+    res.json(people);
 });
 
 app.post('/users', (req, res) => {
     const user = new Person(req.body.name, parseInt(req.body.age));
     people.push(user);
-    console.log('User add   ed:', user);
+    console.log('User added:', user);
     console.log('Current people array:', people);
-    res.send(user);
+    res.json(user);
 }); 
 
 app.get('/users/:age', (req, res) => {
     const age = parseInt(req.params.age);
     const user = people.find(p => p.age === age);
-    res.send(user);
+    res.json(user);
     console.log(people);
 });
 
+// Export for testing
+module.exports = app;
 
-
-app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000');
-});
+// Only listen if this file is run directly
+if (require.main === module) {
+  app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+  });
+}
