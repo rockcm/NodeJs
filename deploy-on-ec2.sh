@@ -15,3 +15,4 @@ docker rm node-app || true
 docker run -d --name node-app -p 3000:3000 rockcm/node-app:latest
 
 echo "Deployment completed!" 
+
