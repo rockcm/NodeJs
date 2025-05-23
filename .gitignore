@@ -21,6 +21,7 @@ pids
 # Editor directories and files
 .idea/
 .vscode/
+.cursorignore
 *.swp
 *.swo
 *~
