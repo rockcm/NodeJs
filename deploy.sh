@@ -7,7 +7,7 @@ docker build -t yourusername/node-app:latest .
 docker push yourusername/node-app:latest
 
 # Deploy to EC2 (requires SSH key setup)
-ssh -i your-key.pem ec2-user@your-ec2-public-ip << 'EOF'
+ssh -i your-key.pem ubuntu@your-ec2-public-ip << 'EOF'
   docker pull yourusername/node-app:latest
   docker stop node-app || true
   docker rm node-app || true

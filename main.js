@@ -19,7 +19,16 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => { 
+// Serve static files from the 'public' directory
+app.use(express.static('public'));
+
+// Redirect root to index.html
+app.get('/', (req, res) => {
+  res.sendFile('index.html', { root: 'public' });
+});
+
+// JSON API route - moved to /api
+app.get('/api', (req, res) => { 
     res.json({ message: 'Hello, World!' });
 });
 
@@ -47,8 +56,8 @@ module.exports = app;
 
 // Only listen if this file is run directly
 if (require.main === module) {
-app.listen(3000, () => {
-  console.log('Server is running on http://localhost:3000');
-});
+  app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+  });
 }
 

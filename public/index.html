@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Node.js App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .btn {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to My Node.js App</h1>
+        
+        <div class="card">
+            <h2>API Endpoints</h2>
+            <ul>
+                <li><a href="/api">GET /api</a> - Returns Hello, World!</li>
+                <li><a href="/users">GET /users</a> - Returns list of users</li>
+            </ul>
+        </div>
+        
+        <div class="card">
+            <h2>Add New User</h2>
+            <form id="userForm">
+                <div>
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div style="margin-top: 10px;">
+                    <label for="age">Age:</label>
+                    <input type="number" id="age" required>
+                </div>
+                <button type="submit" class="btn" style="margin-top: 15px;">Add User</button>
+            </form>
+        </div>
+        
+        <div class="card">
+            <h2>User List</h2>
+            <button id="loadUsers" class="btn">Load Users</button>
+            <div id="userList" style="margin-top: 15px;"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('userForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const age = document.getElementById('age').value;
+            
+            try {
+                const response = await fetch('/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, age })
+                });
+                
+                if (response.ok) {
+                    alert('User added successfully!');
+                    document.getElementById('name').value = '';
+                    document.getElementById('age').value = '';
+                    loadUsers();
+                } else {
+                    alert('Error adding user');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+
+        document.getElementById('loadUsers').addEventListener('click', loadUsers);
+
+        async function loadUsers() {
+            try {
+                const response = await fetch('/users');
+                const users = await response.json();
+                
+                const userListElement = document.getElementById('userList');
+                userListElement.innerHTML = '';
+                
+                if (users.length === 0) {
+                    userListElement.innerHTML = '<p>No users found</p>';
+                    return;
+                }
+                
+                const ul = document.createElement('ul');
+                users.forEach(user => {
+                    const li = document.createElement('li');
+                    li.textContent = `${user.name} (${user.age} years old)`;
+                    ul.appendChild(li);
+                });
+                
+                userListElement.appendChild(ul);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+    </script>
+</body>
+</html> 
