@@ -3,15 +3,14 @@ const express = require('express');
 const cors = require('cors');
 
 class Person {
-    constructor(id, name, age) {
-        this.id = id;
+    constructor(name, age) {
         this.name = name;
         this.age = age;
     }
 }
 
-const person = new Person(1, "John Doe", 30);
-const person2 = new Person(2, "Jane Doe", 25);
+const person = new Person("John Doe", 30);
+const person2 = new Person("Jane Doe", 25);
 
 const people = [person, person2];
 console.log(people);
@@ -28,7 +27,6 @@ app.get('/users', (req, res) => {
     res.json(people);
 });
 
-
 app.post('/users', (req, res) => {
     const user = new Person(req.body.name, parseInt(req.body.age));
     people.push(user);
@@ -37,15 +35,6 @@ app.post('/users', (req, res) => {
     res.json(user);
 }); 
 
-app.delete('/users/:id', (req, res) => {
-    const id = parseInt(req.params.id)
-    const index = people.findIndex(p => p.id === id)
-    console.log('Deleted:', people[index])
-    people.splice(index, 1)[0];
-    res.json(index);
-    
-});
-
 app.get('/users/:age', (req, res) => {
     const age = parseInt(req.params.age);
     const user = people.find(p => p.age === age);
@@ -53,23 +42,13 @@ app.get('/users/:age', (req, res) => {
     console.log(people);
 });
 
-app.get('/users/profile/:id', (req, res) => {
-    const id = parseInt(req.params.id);
-    const user = people.find(p => p.id === id);
-    if (!user) {
-        res.status(404).json({ message: 'User not found' });
-        return;
-    }
-    res.json(user);
-    console.log('Found user:', user);
-});
-
 // Export for testing
 module.exports = app;
 
 // Only listen if this file is run directly
 if (require.main === module) {
-  app.listen(3000, () => {
-    console.log('Server is running on http://localhost:3000');
-  });
+app.listen(3000, () => {
+  console.log('Server is running on http://localhost:3000');
+});
 }
+

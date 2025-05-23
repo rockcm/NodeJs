@@ -47,18 +47,6 @@ describe('Node.js API', () => { // Describe the test suite for the Node.js API
     });
   });
 
-  it('Get /users/profile/:id should return a user object', (done) => {
-    http.get('http://localhost:3000/users/profile/1', (res) => {
-      let data = '';
-      res.on('data', chunk => data += chunk);
-      res.on('end', () => {
-        const json = JSON.parse(data);
-        expect(json).to.be.an('object');
-        done();
-      });
-    });
-  });
-
-
+ 
 
 });
