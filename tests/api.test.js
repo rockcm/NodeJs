@@ -22,7 +22,7 @@ after(function (done) {
 
 describe('Node.js API', () => { // Describe the test suite for the Node.js API
   it('GET / should return Hello, World!', (done) => { // Test case for the root endpoint
-    http.get('http://localhost:3000/', (res) => { // Make a GET request to the root endpoint
+    http.get('http://localhost:3000/api', (res) => { // Make a GET request to the root endpoint
       let data = ''; // Variable to accumulate response data
       
       // Read response data
