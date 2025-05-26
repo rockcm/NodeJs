@@ -1,5 +1,6 @@
 name: Node.js CI/CD
 
+# Trigger the workflow on push or pull request events to the main branch
 on:
   push:
     branches: [main]
@@ -7,57 +8,69 @@ on:
     branches: [main]
 
 jobs:
+  # Define a job named 'build-and-test'
   build-and-test:
+    # Specify the environment to run the job, using the latest Ubuntu version
     runs-on: ubuntu-latest
     steps:
+      # Step to checkout the code from the repository
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Step to set up Node.js environment
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: '18'  # Specify the Node.js version
+          cache: 'npm'        # Enable caching for npm dependencies
 
+      # Step to install project dependencies using npm
       - name: Install dependencies
         run: npm ci
 
+      # Step to run tests using npm
       - name: Run tests
         run: npm test
 
+  # Define a job named 'deploy' that depends on the 'build-and-test' job
   deploy:
-    needs: build-and-test
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: build-and-test  # Ensure this job runs only after 'build-and-test' is successful
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'  # Run only on push to main
     runs-on: ubuntu-latest
     steps:
+      # Step to checkout the code again (necessary for Docker context)
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Step to set up Docker Buildx, a tool for building Docker images
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
+      # Step to log in to Docker Hub using credentials stored in GitHub Secrets
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_TOKEN }}
+          username: ${{ secrets.DOCKER_USERNAME }}  # Docker Hub username
+          password: ${{ secrets.DOCKER_TOKEN }}     # Docker Hub token
 
+      # Step to build and push the Docker image to Docker Hub
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: .
-          push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/node-app:latest
+          context: .  # Use the current directory as the build context
+          push: true  # Push the image to Docker Hub
+          tags: ${{ secrets.DOCKER_USERNAME }}/node-app:latest  # Tag the image
 
+      # Step to deploy the application to an EC2 instance using SSH
       - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            cd ~/NodeJs
-            docker pull ${{ secrets.DOCKER_USERNAME }}/node-app:latest
-            docker stop node-app || true
-            docker rm node-app || true
-            docker run -d -p 3000:3000 --name node-app ${{ secrets.DOCKER_USERNAME }}/node-app:latest
+          host: ${{ secrets.EC2_HOST }}  # EC2 instance host
+          username: ubuntu               # SSH username
+          key: ${{ secrets.EC2_SSH_KEY }}  # SSH private key
+          script: |  # Script to execute on the EC2 instance
+            cd ~/NodeJs  # Change directory to the application folder
+            docker pull ${{ secrets.DOCKER_USERNAME }}/node-app:latest  # Pull the latest Docker image
+            docker stop node-app || true  # Stop the existing container if it exists
+            docker rm node-app || true    # Remove the existing container if it exists
+            docker run -d -p 3000:3000 --name node-app ${{ secrets.DOCKER_USERNAME }}/node-app:latest  # Run the new container
