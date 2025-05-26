@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Build Docker image
+# Build Docker images
 docker build -t yourusername/node-app:latest .
 
 # Push to Docker Hub
