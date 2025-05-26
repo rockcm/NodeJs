@@ -5,7 +5,7 @@ yarn-debug.log*
 yarn-error.log*
 package-lock.json
 
-# Runtime data
+# Runtime datas
 pids
 *.pid
 *.seed
